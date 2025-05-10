@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { UserLayout } from "@/components/UserLayout";
 import api from "@/lib/axios";
 import { toast } from "sonner";
-import { Dialog, DialogTrigger, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 interface AvailableSlots {
@@ -20,7 +20,7 @@ const CabinSlots = () => {
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
 
-  // ✅ Fetch Slots Function (Accessible Everywhere)
+  // ✅ Fetch Slots Function
   const fetchSlots = async () => {
     setLoading(true);
     try {
@@ -47,41 +47,45 @@ const CabinSlots = () => {
       toast.success("Slot booked successfully!");
       setConfirming(false);
       setSelectedSlot(null);
-      fetchSlots(); // ✅ Reload slots after booking
-    } catch (error) {
-      toast.error("Failed to book the selected slot");
+      fetchSlots();
+    } catch (error: any) {
+      toast.error(error.response?.data?.detail || "Failed to book the selected slot");
     }
   };
 
   const renderSlots = () => {
     if (!slots || Object.keys(slots.available_slots).length === 0) {
-      return (
-        <div className="text-center mt-6">
-          <p className="text-gray-500 text-lg">No available slots for today or tomorrow.</p>
-        </div>
-      );
+      return <p className="text-gray-500 text-lg">No available slots for today or tomorrow.</p>;
     }
 
     return Object.entries(slots.available_slots).map(([date, times]) => (
       <div key={date} className="mb-4">
         <h3 className="text-lg font-semibold">{date}</h3>
         <div className="flex flex-wrap gap-2 mt-2">
-          {times.length > 0 ? (
-            times.map((time) => (
+          {times.map((time) => {
+            const isPast = time.includes("(Past)");
+            const isBooked = time.includes("(Booked)");
+
+            return (
               <button
                 key={time}
-                className="nxtwave-btn"
+                className={`nxtwave-btn transition duration-200 ${
+                  isPast || isBooked 
+                    ? "bg-blue-100 text-blue-700 border-blue-300 cursor-not-allowed" 
+                    : ""
+                }`}
                 onClick={() => {
-                  setSelectedSlot(time);
-                  setConfirming(true);
+                  if (!isPast && !isBooked) {
+                    setSelectedSlot(time);
+                    setConfirming(true);
+                  }
                 }}
+                disabled={isPast || isBooked}
               >
                 {time}
               </button>
-            ))
-          ) : (
-            <p className="text-gray-500">No available slots</p>
-          )}
+            );
+          })}
         </div>
       </div>
     ));
@@ -90,20 +94,9 @@ const CabinSlots = () => {
   return (
     <UserLayout>
       <div className="animate-fade-in">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Available Slots</h1>
-          {slots ? <h2 className="text-xl">{slots.cabin_name}</h2> : null}
-        </div>
-
-        {loading ? (
-          <p>Loading slots...</p>
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : (
-          <div>
-            {renderSlots()}
-          </div>
-        )}
+        <h1 className="text-2xl font-bold text-gray-800">Available Slots</h1>
+        {slots ? <h2 className="text-xl">{slots.cabin_name}</h2> : null}
+        {loading ? <p>Loading slots...</p> : error ? <p className="text-red-500">{error}</p> : renderSlots()}
 
         {/* Confirmation Dialog */}
         <Dialog open={confirming} onOpenChange={setConfirming}>
