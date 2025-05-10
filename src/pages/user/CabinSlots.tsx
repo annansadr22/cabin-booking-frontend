@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 interface AvailableSlots {
   cabin_name: string;
   available_slots: Record<string, string[]>;
+  booked_slots: string[];  // ✅ Booked slots directly from the API
 }
 
 const CabinSlots = () => {
@@ -37,6 +38,13 @@ const CabinSlots = () => {
     if (cabinId) fetchSlots();
   }, [cabinId]);
 
+  // ✅ Calculate Current IST Time (Client-Side)
+  const getCurrentISTTime = () => {
+    const now = new Date();
+    const istOffset = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
+    return new Date(now.getTime() + istOffset - now.getTimezoneOffset() * 60 * 1000);
+  };
+
   const handleBookSlot = async () => {
     if (!selectedSlot) return;
 
@@ -63,16 +71,18 @@ const CabinSlots = () => {
         <h3 className="text-lg font-semibold">{date}</h3>
         <div className="flex flex-wrap gap-2 mt-2">
           {times.map((time) => {
+            const isBooked = slots.booked_slots.includes(time.split(" ")[0] + " " + time.split(" ")[1]);
             const isPast = time.includes("(Past)");
-            const isBooked = time.includes("(Booked)");
 
             return (
               <button
                 key={time}
                 className={`nxtwave-btn transition duration-200 ${
-                  isPast || isBooked 
-                    ? "bg-blue-100 text-blue-700 border-blue-300 cursor-not-allowed" 
-                    : ""
+                  isPast 
+                    ? "bg-gray-200 text-gray-600 border-gray-400 cursor-not-allowed"
+                    : isBooked 
+                    ? "bg-blue-100 text-blue-700 border-blue-300 cursor-not-allowed"
+                    : "bg-green-100 text-green-700 hover:bg-green-200"
                 }`}
                 onClick={() => {
                   if (!isPast && !isBooked) {
@@ -81,6 +91,7 @@ const CabinSlots = () => {
                   }
                 }}
                 disabled={isPast || isBooked}
+                title={isPast ? "Past Slot" : isBooked ? "Already Booked" : ""}
               >
                 {time}
               </button>
