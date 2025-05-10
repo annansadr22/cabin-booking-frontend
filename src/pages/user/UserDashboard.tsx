@@ -64,8 +64,8 @@ const UserDashboard = () => {
           <div className="bg-blue-50 border-l-4 border-nxtwave-primary rounded-md p-4">
             <h3 className="font-medium text-nxtwave-primary">Book Early!</h3>
             <p className="text-gray-700">
-              Our most popular cabins book up quickly, especially during weekends and holidays. 
-              We recommend booking at least 2 weeks in advance to secure your preferred date and cabin.
+              Our most popular cabins book up quickly. 
+              We recommend booking in advance to secure your preferred date and cabin.
             </p>
           </div>
         </div>

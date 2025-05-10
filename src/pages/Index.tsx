@@ -11,7 +11,7 @@ const Index = () => {
             Welcome to NxtWave Cabin Booking System
           </h1>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Experience tranquility in our beautiful cabins. Book your perfect getaway today.
+            Your Workspace, Your Schedule. Reserve Your Preferred Cabin Instantly.
           </p>
           <div className="space-x-4">
             <Link to="/user/login" className="bg-white text-nxtwave-primary px-6 py-3 rounded-md font-medium hover:bg-gray-100 transition-colors shadow-lg">
@@ -27,16 +27,16 @@ const Index = () => {
       {/* Features section */}
       <div className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Why Choose NxtWave?</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Why Choose NxtWave's Cabin?</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="nxtwave-card text-center">
               <div className="w-16 h-16 bg-nxtwave-primary text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🏡</span>
+                <span className="text-2xl">🚀</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Beautiful Cabins</h3>
+              <h3 className="text-xl font-semibold mb-2">Efficient Cabin Booking</h3>
               <p className="text-gray-600">
-                Choose from our selection of carefully designed cabins in scenic locations.
+                Easily book, or cancel your cabin reservations with just a few clicks, ensuring a hassle-free experience for your team.
               </p>
             </div>
             
@@ -52,11 +52,11 @@ const Index = () => {
             
             <div className="nxtwave-card text-center">
               <div className="w-16 h-16 bg-nxtwave-primary text-white rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🌲</span>
+                <span className="text-2xl">🕒</span>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Nature Retreats</h3>
+              <h3 className="text-xl font-semibold mb-2">Flexible Time Management</h3>
               <p className="text-gray-600">
-                Disconnect from the daily grind and reconnect with nature at our serene locations.
+                Choose your preferred cabin and time slot with flexible booking options, ensuring seamless scheduling and productive meetings.
               </p>
             </div>
           </div>
@@ -68,7 +68,7 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Ready to book your getaway?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto text-gray-600">
-            Join our community of nature enthusiasts and book your perfect cabin today.
+            Join us and enjoy seamless cabin booking with just a few clicks.
           </p>
           <div className="space-x-4">
             <Link to="/user/login" className="nxtwave-btn px-8 py-3 text-lg">
