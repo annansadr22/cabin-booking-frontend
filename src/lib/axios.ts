@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Create an Axios instance
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/", // <-- Make sure this is correct
+  baseURL: "https://cabin-booking-backend.onrender.com/", // <-- Make sure this is correct
   withCredentials: false,
   headers: {
     "Content-Type": "application/json",
