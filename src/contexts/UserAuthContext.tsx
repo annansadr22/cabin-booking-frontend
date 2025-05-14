@@ -57,19 +57,28 @@ export const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   // ✅ User Registration Function (Backend API)
   const register = async (username: string, email: string, password: string) => {
-    try {
-      await api.post("/users/register", {
-        username,
-        email,
-        password,
-      });
+  try {
+    const response = await api.post("/users/register", {
+      username,
+      email,
+      password,
+    });
 
-      toast.success("Registration successful! Please login.");
+    const message = response.data.message || "Registration successful! Please verify your email.";
+    toast.success(message);
+
+    // ❌ Do not redirect yet — wait for email verification
+    // You can optionally navigate to login after a delay
+    setTimeout(() => {
       navigate("/user/login");
-    } catch (error) {
-      toast.error("Registration failed");
-    }
-  };
+    }, 3000);
+  } catch (error: any) {
+    const message =
+      error?.response?.data?.detail || "Registration failed. Please try again.";
+    toast.error(message);
+  }
+};
+
 
   // ✅ User Logout Function
   const logout = () => {

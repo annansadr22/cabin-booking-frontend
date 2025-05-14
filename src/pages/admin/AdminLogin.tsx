@@ -56,7 +56,7 @@ const AdminLogin = () => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="username" className="form-label">
-              Username or Email
+              Email
             </label>
             <input
               id="username"

@@ -56,7 +56,7 @@ const UserLogin = () => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="username" className="form-label">
-              Username or Email
+              Email
             </label>
             <input
               id="username"
@@ -96,6 +96,11 @@ const UserLogin = () => {
             </button>
           </div>
         </form>
+        <div className="text-right text-sm mt-1">
+          <Link to="/user/forgot-password" className="text-nxtwave-primary hover:underline">
+            Forgot password?
+          </Link>
+        </div>
         
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">

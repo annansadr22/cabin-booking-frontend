@@ -43,6 +43,8 @@ const UserRegister = () => {
     
     try {
       await register(username, email, password);
+      toast.success("Registered successfully. Please check your email to verify.");
+
       // Redirect is handled in the register function
     } catch (error) {
       let errorMessage = "Failed to register";

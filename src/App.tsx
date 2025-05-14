@@ -12,6 +12,9 @@ import UserDashboard from "./pages/user/UserDashboard";
 import AvailableCabins from "./pages/user/AvailableCabins";
 import CabinSlots from "./pages/user/CabinSlots";
 import MyBookings from "./pages/user/MyBookings";
+import ForgotPassword from "./pages/user/ForgotPassword";
+import ResetPassword from "./pages/user/ResetPassword";
+import VerifyEmail from "./pages/user/VerifyEmail";
 
 // Admin Pages
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -43,6 +46,9 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/user/login" element={<UserLogin />} />
               <Route path="/user/register" element={<UserRegister />} />
+              <Route path="/user/forgot-password" element={<ForgotPassword />} />
+              <Route path="/user/reset-password" element={<ResetPassword />} />
+              <Route path="/user/verify-email" element={<VerifyEmail />} />
               <Route path="/admin/login" element={<AdminLogin />} />
 
               {/* Protected user routes */}
@@ -60,7 +66,7 @@ const App = () => (
                 <Route path="/admin/bookings" element={<ManageBookings />} />
               </Route>
 
-              {/* 404 route */}
+              {/* 404 fallback */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AdminAuthProvider>
