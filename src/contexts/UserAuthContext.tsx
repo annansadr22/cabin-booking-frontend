@@ -1,9 +1,7 @@
-// src/contexts/UserAuthContext.tsx
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import api from "@/lib/axios"; // Use Axios
+import api from "@/lib/axios";
 
 interface User {
   id: string;
@@ -14,7 +12,12 @@ interface User {
 interface UserAuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
-  register: (username: string, email: string, password: string) => Promise<void>;
+  register: (
+    username: string,
+    email: string,
+    password: string,
+    employeeId: string
+  ) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -32,19 +35,22 @@ export const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, []);
 
-  // ✅ User Login Function (Backend API)
+  // ✅ User Login Function
   const login = async (username: string, password: string) => {
     try {
       const response = await api.post("/users/login", {
-        email: username,  // Using email/username as input
+        email: username,
         password,
       });
 
       const token = response.data.access_token;
       localStorage.setItem("nxtwave_token", token);
 
-      // Fetch user data (optional)
-      const userData = { id: "1", username, email: username };
+      const userData = {
+          id: "1", // or remove if not used
+          username: response.data.username,
+          email: response.data.email,
+        };
       setUser(userData);
       localStorage.setItem("nxtwave_user", JSON.stringify(userData));
 
@@ -55,32 +61,29 @@ export const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  // ✅ User Registration Function (Backend API)
-  const register = async (username: string, email: string, password: string) => {
-  try {
-    const response = await api.post("/users/register", {
-      username,
-      email,
-      password,
-    });
+  // ✅ Updated Registration Function with employee_id
+  const register = async (
+    username: string,
+    email: string,
+    password: string,
+    employeeId: string
+  ) => {
+    try {
+      await api.post("/users/register", {
+        username,
+        email,
+        password,
+        employee_id: employeeId, // ✅ included
+      });
 
-    const message = response.data.message || "Registration successful! Please verify your email.";
-    toast.success(message);
-
-    // ❌ Do not redirect yet — wait for email verification
-    // You can optionally navigate to login after a delay
-    setTimeout(() => {
+      toast.success("Registration successful! Please check your email to verify.");
       navigate("/user/login");
-    }, 3000);
-  } catch (error: any) {
-    const message =
-      error?.response?.data?.detail || "Registration failed. Please try again.";
-    toast.error(message);
-  }
-};
+    } catch (error) {
+      toast.error("Registration failed");
+    }
+  };
 
-
-  // ✅ User Logout Function
+  // ✅ User Logout
   const logout = () => {
     setUser(null);
     localStorage.removeItem("nxtwave_user");
@@ -90,7 +93,9 @@ export const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   };
 
   return (
-    <UserAuthContext.Provider value={{ user, login, register, logout, isAuthenticated: !!user }}>
+    <UserAuthContext.Provider
+      value={{ user, login, register, logout, isAuthenticated: !!user }}
+    >
       {children}
     </UserAuthContext.Provider>
   );

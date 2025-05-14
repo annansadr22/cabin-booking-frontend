@@ -10,8 +10,9 @@ import { Button } from "@/components/ui/button";
 interface AvailableSlots {
   cabin_name: string;
   available_slots: Record<string, string[]>;
-  booked_slots: string[];  // ✅ Booked slots directly from the API
+  booked_slots_info: Record<string, { username: string; employee_id: string }>;
 }
+
 
 const CabinSlots = () => {
   const { cabinId } = useParams<{ cabinId: string }>();
@@ -61,23 +62,25 @@ const CabinSlots = () => {
     }
   };
 
-  const renderSlots = () => {
-    if (!slots || Object.keys(slots.available_slots).length === 0) {
-      return <p className="text-gray-500 text-lg">No available slots for today or tomorrow.</p>;
-    }
+const renderSlots = () => {
+  if (!slots || Object.keys(slots.available_slots).length === 0) {
+    return <p className="text-gray-500 text-lg">No available slots for today or tomorrow.</p>;
+  }
 
-    return Object.entries(slots.available_slots).map(([date, times]) => (
-      <div key={date} className="mb-4">
-        <h3 className="text-lg font-semibold">{date}</h3>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {times.map((time) => {
-            const isBooked = slots.booked_slots.includes(time.split(" ")[0] + " " + time.split(" ")[1]);
-            const isPast = time.includes("(Past)");
+  return Object.entries(slots.available_slots).map(([date, times]) => (
+    <div key={date} className="mb-4">
+      <h3 className="text-lg font-semibold">{date}</h3>
+      <div className="flex flex-wrap gap-2 mt-2">
+        {times.map((time) => {
+          const cleanTime = time.replace(" (Booked)", "").replace(" (Past)", "");
+          const isPast = time.includes("(Past)");
+          const isBooked = !!slots.booked_slots_info?.[cleanTime];
+          const bookedBy = isBooked ? slots.booked_slots_info[cleanTime] : null;
 
-            return (
+          return (
+            <div key={time} className="flex flex-col items-center">
               <button
-                key={time}
-                className={`nxtwave-btn transition duration-200 ${
+                className={`nxtwave-btn transition duration-200 text-sm px-4 py-2 ${
                   isPast 
                     ? "bg-gray-200 text-gray-600 border-gray-400 cursor-not-allowed"
                     : isBooked 
@@ -86,21 +89,28 @@ const CabinSlots = () => {
                 }`}
                 onClick={() => {
                   if (!isPast && !isBooked) {
-                    setSelectedSlot(time);
+                    setSelectedSlot(cleanTime);
                     setConfirming(true);
                   }
                 }}
                 disabled={isPast || isBooked}
-                title={isPast ? "Past Slot" : isBooked ? "Already Booked" : ""}
+                title={isPast ? "Past Slot" : isBooked ? `Booked by ${bookedBy?.username}` : ""}
               >
                 {time}
               </button>
-            );
-          })}
-        </div>
+              {isBooked && bookedBy && (
+                <p className="text-xs text-blue-600 mt-1">
+                  👤 {bookedBy.username} ({bookedBy.employee_id})
+                </p>
+              )}
+            </div>
+          );
+        })}
       </div>
-    ));
-  };
+    </div>
+  ));
+};
+
 
   return (
     <UserLayout>

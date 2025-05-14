@@ -10,6 +10,7 @@ const UserRegister = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [employeeId, setEmployeeId] = useState("");
   
   const { register, isAuthenticated } = useUserAuth();
 
@@ -42,7 +43,7 @@ const UserRegister = () => {
     setIsLoading(true);
     
     try {
-      await register(username, email, password);
+      await register(username, email, password, employeeId);
       toast.success("Registered successfully. Please check your email to verify.");
 
       // Redirect is handled in the register function
@@ -72,7 +73,7 @@ const UserRegister = () => {
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="username" className="form-label">
-              Username
+              Full Name
             </label>
             <input
               id="username"
@@ -83,6 +84,21 @@ const UserRegister = () => {
               className="form-input"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="employeeId" className="form-label">
+              Employee ID
+            </label>
+            <input
+              id="employeeId"
+              name="employeeId"
+              type="text"
+              required
+              className="form-input"
+              value={employeeId}
+              onChange={(e) => setEmployeeId(e.target.value)}
             />
           </div>
           
