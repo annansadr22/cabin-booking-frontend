@@ -28,7 +28,7 @@ const ManageCabins = () => {
   const defaultFormData: CabinFormData = {
     name: "",
     description: "",
-    slot_duration: 30 // Default to 30 minutes
+    slot_duration: 40 // Default to 30 minutes
   };
   
   const [formData, setFormData] = useState<CabinFormData>(defaultFormData);
@@ -164,7 +164,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                 className="form-input mb-3"
                 required
               >
-                {[30, 45, 60, 90, 120, 180, 240, 300, 360].map((duration) => (
+                {[30, 40, 45, 50, 55, 60, 90, 120, 180, 240, 300, 360].map((duration) => (
                   <option key={duration} value={duration}>
                     {duration} minutes
                   </option>
