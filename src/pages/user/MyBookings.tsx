@@ -53,34 +53,36 @@ const MyBookings = () => {
     }
   };
 
-  const renderBookingCard = (booking: Booking, isActive: boolean) => (
-    <div key={booking.id} className="nxtwave-card mb-4">
-      <div className="flex justify-between items-start">
-        <div>
-          <h3 className="text-lg font-semibold">{booking.cabin_name || "Unknown Cabin"}</h3>
-          <p className="text-gray-700 mb-2">Slot: {new Date(booking.slot_time).toLocaleString()}</p>
-          <p className="text-sm text-gray-500">Booking ID: {booking.id}</p>
-          <span className={`text-sm px-2 py-1 rounded-full inline-block mt-2 ${
-            booking.status === "Active" 
-              ? "bg-green-100 text-green-800" 
-              : "bg-red-100 text-red-800"
-          }`}>
-            {booking.status}
-          </span>
-        </div>
-        
-        {isActive && (
-          <button
-            onClick={() => handleCancelBooking(booking.id)}
-            disabled={isCancelling}
-            className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 text-sm"
-          >
-            {isCancelling ? "Cancelling..." : "Cancel Booking"}
-          </button>
-        )}
+const renderBookingCard = (booking: Booking, isActive: boolean) => (
+  <div key={booking.id} className="nxtwave-card mb-4">
+    <div className="flex justify-between items-start">
+      <div>
+        <h3 className="text-lg font-semibold">{booking.cabin_name || "Unknown Cabin"}</h3>
+        <p className="text-gray-700 mb-1">Slot: {new Date(booking.slot_time).toLocaleString()}</p>
+        <p className="text-gray-700 mb-1">Duration: {booking.duration} min</p> {/* ✅ New Line */}
+        {/*<p className="text-sm text-gray-500">Booking ID: {booking.id}</p>*/}
+        <span className={`text-sm px-2 py-1 rounded-full inline-block mt-2 ${
+          booking.status === "Active" 
+            ? "bg-green-100 text-green-800" 
+            : "bg-red-100 text-red-800"
+        }`}>
+          {booking.status}
+        </span>
       </div>
+
+      {isActive && (
+        <button
+          onClick={() => handleCancelBooking(booking.id)}
+          disabled={isCancelling}
+          className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 text-sm"
+        >
+          {isCancelling ? "Cancelling..." : "Cancel Booking"}
+        </button>
+      )}
     </div>
-  );
+  </div>
+);
+
   
   return (
     <UserLayout>

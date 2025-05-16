@@ -61,8 +61,16 @@ export const AdminAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       toast.success(`Welcome back, ${adminData.username}!`);
       navigate("/admin/dashboard");
     } catch (error: any) {
-      toast.error(error.response?.data?.detail || "Invalid admin credentials");
-    }
+        console.error("Login error:", error);
+
+        if (error.response?.status === 422) {
+          toast.error("Please enter a valid email address.");
+        } else if (error.response?.status === 401) {
+          toast.error(error.response.data.detail || "Invalid email or password.");
+        } else {
+          toast.error("Something went wrong. Please try again.");
+        }
+      }
   };
 
   // ✅ Admin Logout Function

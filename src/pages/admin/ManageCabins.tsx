@@ -10,6 +10,7 @@ interface Cabin {
   slot_duration: number;
   start_time: string;
   end_time: string;
+  restricted_times: string[];
 }
 
 interface CabinFormData {
@@ -17,6 +18,7 @@ interface CabinFormData {
   name: string;
   description: string;
   slot_duration: number;
+  restricted_times: string[];
 }
 
 const ManageCabins = () => {
@@ -28,12 +30,12 @@ const ManageCabins = () => {
   const defaultFormData: CabinFormData = {
     name: "",
     description: "",
-    slot_duration: 40 // Default to 30 minutes
+    slot_duration: 40,
+    restricted_times: []
   };
-  
+
   const [formData, setFormData] = useState<CabinFormData>(defaultFormData);
 
-  // ✅ Fetch Cabins from Backend
   useEffect(() => {
     fetchCabins();
   }, []);
@@ -47,7 +49,6 @@ const ManageCabins = () => {
     }
   };
 
-  // ✅ Handle Form Change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -56,25 +57,33 @@ const ManageCabins = () => {
     }));
   };
 
-  // ✅ Handle Create or Update Cabin
-const handleSubmit = async (e: React.FormEvent) => {
+  const handleRestrictedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setFormData(prev => ({
+    ...prev,
+    restricted_times: e.target.value
+      .split(",")
+      .map(t => t.trim())
+      .filter(t => t !== "")
+  }));
+};
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
       const requestData = {
         ...formData,
-        start_time: "09:00", // Default start time (9:00 AM)
-        end_time: "19:00",   // Default end time (7:00 PM)
-        max_bookings_per_day: 5 // Default to 5, change this as needed
+        start_time: "09:00",
+        end_time: "19:00",
+        max_bookings_per_day: 5
       };
 
       if (editingCabin) {
-        // Update Existing Cabin
         await api.put(`/cabins/${editingCabin.id}`, requestData);
         toast.success("Cabin updated successfully");
       } else {
-        // Create New Cabin
         await api.post("/cabins", requestData);
         toast.success("Cabin created successfully");
       }
@@ -90,19 +99,17 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
   };
 
-
-  // ✅ Handle Edit
   const handleEdit = (cabin: Cabin) => {
     setEditingCabin(cabin);
     setFormData({
       name: cabin.name,
       description: cabin.description,
-      slot_duration: cabin.slot_duration
+      slot_duration: cabin.slot_duration,
+      restricted_times: cabin.restricted_times || []
     });
     setShowForm(true);
   };
 
-  // ✅ Handle Delete
   const handleDelete = async (cabinId: number) => {
     if (window.confirm("Are you sure you want to delete this cabin?")) {
       try {
@@ -115,7 +122,6 @@ const handleSubmit = async (e: React.FormEvent) => {
     }
   };
 
-  // ✅ Handle Cancel Form
   const handleCancel = () => {
     setFormData(defaultFormData);
     setEditingCabin(null);
@@ -131,14 +137,13 @@ const handleSubmit = async (e: React.FormEvent) => {
             Create New Cabin
           </button>
         </div>
-        
-        {/* Form for Create/Edit Cabin */}
+
         {showForm && (
           <div className="bg-white rounded-lg shadow-md p-6 mb-8">
             <h2 className="text-xl font-semibold mb-4">
               {editingCabin ? "Edit Cabin" : "Create New Cabin"}
             </h2>
-            
+
             <form onSubmit={handleSubmit}>
               <input
                 name="name"
@@ -171,6 +176,15 @@ const handleSubmit = async (e: React.FormEvent) => {
                 ))}
               </select>
 
+              <input
+                type="text"
+                name="restricted_times"
+                value={formData.restricted_times.join(",")}
+                onChange={handleRestrictedChange}
+                placeholder="Restricted Times (e.g. 13:30-14:00,17:00-17:15)"
+                className="form-input mb-3"
+              />
+
               <div className="flex justify-end space-x-3">
                 <button type="button" className="px-4 py-2 bg-gray-200" onClick={handleCancel}>
                   Cancel
@@ -183,7 +197,6 @@ const handleSubmit = async (e: React.FormEvent) => {
           </div>
         )}
 
-        {/* Cabin List */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cabins.map((cabin) => (
             <div key={cabin.id} className="nxtwave-card">
@@ -191,6 +204,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               <p>{cabin.description}</p>
               <p>Duration: {cabin.slot_duration} minutes</p>
               <p>Time: {cabin.start_time} - {cabin.end_time}</p>
+              <p>Restricted: {cabin.restricted_times?.join(", ") || "None"}</p>
               <div className="flex justify-between mt-4">
                 <button onClick={() => handleEdit(cabin)} className="bg-blue-500 text-white px-4 py-1 rounded">
                   Edit
