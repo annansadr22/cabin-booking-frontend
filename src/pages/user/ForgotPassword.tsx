@@ -19,8 +19,9 @@ const ForgotPassword = () => {
     try {
       await api.post("/users/forgot-password", { email });
       toast.success("Check your inbox for the reset link");
-    } catch (error) {
-      toast.error("Failed to send reset link");
+    } catch (error: any) {
+      const errorMsg = error?.response?.data?.detail || "Failed to send reset link";
+      toast.error(errorMsg);
     } finally {
       setIsLoading(false);
     }

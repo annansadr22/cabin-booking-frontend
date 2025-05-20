@@ -78,9 +78,11 @@ export const UserAuthProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
       toast.success("Registration successful! Please check your email to verify.");
       navigate("/user/login");
-    } catch (error) {
-      toast.error("Registration failed");
-    }
+    } catch (error: any) {
+  const errorMsg = error?.response?.data?.detail || "Registration failed";
+  throw new Error(errorMsg); // 🔁 Pass it to UserRegister
+}
+
   };
 
   // ✅ User Logout

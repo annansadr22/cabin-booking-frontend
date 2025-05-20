@@ -33,7 +33,16 @@ const MyBookings = () => {
       const { active_bookings, past_bookings } = response.data;
 
       setActiveBookings(active_bookings);
-      setPastBookings(past_bookings);
+      // Filter only bookings from the last 4 days
+      const fourDaysAgo = new Date();
+      fourDaysAgo.setDate(fourDaysAgo.getDate() - 4);
+
+      const recentPastBookings = past_bookings
+        .filter((booking: Booking) => new Date(booking.slot_time) >= fourDaysAgo)
+        .sort((a: Booking, b: Booking) => new Date(b.slot_time).getTime() - new Date(a.slot_time).getTime());
+
+      setPastBookings(recentPastBookings);
+
     } catch (error) {
       toast.error("Failed to load bookings. Please try again.");
     }
