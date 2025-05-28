@@ -105,7 +105,7 @@ const AdminLogin = () => {
           </div>
           
           <div className="mt-4 pt-4 border-t text-xs text-gray-500">
-            <p>For demo: Use "admin" as username and "admin123" as password</p>
+            <p></p>
           </div>
         </div>
       </div>
